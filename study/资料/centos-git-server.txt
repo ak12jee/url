@@ -1,0 +1,85 @@
+
+
+wget https://github.com/git/git/archive/master.zip  
+
+make configure  
+./configure --prefix=/usr/local/ --with-curl --with-expat  
+make  
+make install 
+
+
+
+yum -y install gcc automake autoconf libtool make  
+
+* tclsh failed; using unoptimized loading  
+yum install -y gettext 
+yum -y install zlib zlib-devel 
+yum install expat-devel 
+yum install perl-ExtUtils-MakeMaker package  
+
+
+
+-----------------------------------setting--------------------------------
+
+1，安装Git所需依赖包
+     # yum install curl-devel expat-devel gettext-devel openssl-devel zlib-devel
+     # yum install gcc perl-ExtUtils-MakeMaker
+ 
+2，卸载CentOS自带的git
+     # yum remove git     
+ 
+3，下载较新Git版本
+     # mkdir /usr/src/tools
+     # cd /usr/src/tools
+     # wget https://www.kernel.org/pub/software/scm/git/git-2.8.3.tar.gz
+     # tar -zxvf git-2.8.3.tar
+ 
+4，安装Git并添加到环境变量中，Git安装路径为/usr/local/git
+     # cd git-2.8.3.tar
+     # make prefix=/usr/local/git all
+     # make prefix=/usr/local/git install
+     # echo "export PATH=$PATH:/usr/local/git/bin" >> /etc/bashrc
+     # source /etc/bashrc
+     
+     完毕，查看git版本号
+     # git --version 
+ 
+5，创建用户git，用来运行Git服务
+     # adduser git
+     # su git
+     # cd ~
+     # mkdir .ssh
+     # touch authorized_keys
+     在git用户的家目录（/home/git/）创建一个.ssh的目录，将协同工作人员的SSH公钥添加到该目录的authorized_keys文件中。
+ 
+6，收录客户端的SSH公钥到/home/git/.ssh/authorized_keys文件中
+     客户端使用命令 ssh-keygen -t rsa -C "你的email地址" ，会在~/.ssh/id_rsa.pub生成SSH公钥，复制给管理员即可。　
+ 
+7，配置服务器端ssh服务
+     # vim /etc/ssh/sshd_config
+     RSAAuthentication yes
+     PubkeyAuthentication yes
+     AuthorizedKeysFile /home/git/.ssh/authorized_keys #你的authorized_keys所在路径
+ 
+8，初始化git仓库（裸库）
+     # cd /home/git 
+     # mkdir project.git
+     # git init --bare project.git
+ 
+9，禁用git用户shell登录
+     # vim /etc/passwd
+     git:x:1001:1001:,,,:/home/git:/bin/bash
+     改为
+     git:x:1001:1001:,,,:/home/git:/usr/local/git/bin/git-shell
+ 
+ 
+现在客户端可以通过 git clone 命令克隆远程仓库了，注意这里有些问题需要注意，SSH对公钥，私钥的权限和所有权的要求是非常严格的，总结如下：
+1，下面两个目录的所有权必须是git（上面创建的git用户），所属组也应该是git，权限必须为700
+     ①/home/git     # chmod 700 /home/git
+     ②/home/git/.ssh     # chmod 700 /home/git/.ssh
+2，公钥文件的所有权必须是git，所属组也必须是git，权限必须是644
+     ①/home/git/.ssh/authorized_keys #c hmod 644 /home/git/.ssh/authorized_keys
+	 
+	 
+	 
+git clone git@39.104.60.158:/home/git/project/qqhe.git 

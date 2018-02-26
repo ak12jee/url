@@ -1,0 +1,14 @@
+http://blog.csdn.net/mergerly/article/details/51671890
+http://blog.csdn.net/lvjianchao/article/details/50675781
+
+
+git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+
+
+redis+mysql数据同步（协同）C/C++实现
+http://blog.csdn.net/irean_lau/article/details/51395515
+https://github.com/IreanLau/redis-mysql.git 
+
+
+
+http://ftp.gnu.org/gnu/gcc/

@@ -1,0 +1,116 @@
+
+一、配置防火墙，开启FTP服务器需要的端口
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 21 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 10060:10090 -j ACCEPT
+
+systemctl restart iptables.service #最后重启防火墙使配置生效
+systemctl enable iptables.service #设置防火墙开机启动
+说明：21端口是ftp服务端口；10060到10090是Vsftpd被动模式需要的端口，可自定义一段大于1024的tcp端口。
+
+二、关闭SELINUX
+vi /etc/selinux/config
+
+#SELINUX=enforcing #注释掉
+#SELINUXTYPE=targeted #注释掉
+SELINUX=disabled #增加
+:wq! #保存退出
+setenforce 0 #使配置立即生效
+
+三、安装vsftpd
+
+yum install -y vsftpd #安装vsftpd
+yum install -y psmisc net-tools systemd-devel libdb-devel perl-DBI  #安装vsftpd虚拟用户配置依赖包
+systemctl start vsftpd.service #启动
+systemctl enable vsftpd.service #设置vsftpd开机启动
+
+四、配置vsftp服务器
+
+cp /etc/vsftpd/vsftpd.conf /etc/vsftpd/vsftpd.conf-bak #备份默认配置文件
+配置文件如：vsftpd.conf
+
+五、建立虚拟用户名单文件
+
+touch /etc/vsftpd/virtusers
+编辑虚拟用户名单文件：（第一行账号，第二行密码，注意：不能使用root做用户名，系统保留）
+
+vim /etc/vsftpd/virtusers
+
+qqhe
+sa123456
+web2
+123456
+web3
+123456
+
+:wq! #保存退出
+
+六、生成虚拟用户数据文件
+
+db_load -T -t hash -f /etc/vsftpd/virtusers /etc/vsftpd/virtusers.db
+chmod 600 /etc/vsftpd/virtusers.db #设定PAM验证文件，并指定对虚拟用户数据库文件进行读取
+
+
+七、在/etc/pam.d/vsftpd的文件头部加入以下信息（在后面加入无效）
+
+修改前先备份 cp /etc/pam.d/vsftpd /etc/pam.d/vsftpdbak
+vim /etc/pam.d/vsftpd
+
+auth sufficient /lib64/security/pam_userdb.so db=/etc/vsftpd/virtusers
+account sufficient /lib64/security/pam_userdb.so db=/etc/vsftpd/virtusers
+
+注意：如果系统为32位，上面改为lib，否则配置失败
+
+
+八、新建系统用户vsftpd，用户目录为/home/vsftpd, 用户登录终端设为/bin/false(即使之不能登录系统)
+
+useradd vsftpd -d /home/vsftpd_test -s /bin/false
+chown vsftpd:vsftpd /home/vsftpd_test -R
+
+注：chown vsftpd:vsftpd /home/vsftpd_test -R #如果虚拟用户的宿主用户为vsftpd，需要这样设置。
+
+
+九、建立虚拟用户个人Vsftp的配置文件
+
+mkdir /etc/vsftpd/vconf
+cd /etc/vsftpd/vconf
+
+touch web1 web2 web3 #这里创建三个虚拟用户配置文件
+
+mkdir -p /home/vsftpd_test/qqhemj/http/
+
+vi web1 #编辑用户web1配置文件，其他的跟这个配置文件类似
+local_root=/home/vsftpd_test/qqhemj/http/
+
+write_enable=YES
+anon_world_readable_only=NO
+anon_upload_enable=YES
+anon_mkdir_write_enable=YES
+anon_other_write_enable=YES
+
+
+十、最后重启vsftpd服务器
+
+systemctl restart vsftpd.service
+
+备注：
+guest_username=vsftpd #指定虚拟用户的宿主用户（就是我们前面新建的用户）
+
+
+
+用户名 权限说明
+
+admins 管理员，可以上传、下载、新建文件夹、删除和更改文件和文件夹名。
+write_enable=YES
+download_enable=YES
+
+
+upload 不可以下载，可以上传、新建文件夹，但不能删除文件和文件夹，不能重命名原有文件和文件夹；
+virtual_use_local_privs=NO
+anon_world_readable_only=NO
+write_enable=YES
+anon_upload_enable=YES
+anon_mkdir_write_enable=YES
+
+
+download 只能下载，不能进行其他操作。
+anon_world_readable_only=NO

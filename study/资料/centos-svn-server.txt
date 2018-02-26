@@ -1,0 +1,98 @@
+一.安装
+
+　　yum install subversion
+
+　　二.配置
+
+　　本系统采用为每个项目单独建一版本库的策略。配置文件，密码文件，访问控制文件等都放在版本库的conf目录下。
+
+　　所以每次开始一个新项目都必须新建一个版本库，并重新配置各配置文件。还有很重要的一条，要求各组员重新配置客户端，包括服务器版本库路径，本地路径等信息。
+
+　　1. 建立版本库目录(可建立多个，新建库后以下各项都需重新配置。注意区别安装目录与版本库目录,以下讲的都是版本库目录)
+
+　　mkdir –p /home/svn/repos
+
+　　#类似可以创建 mkdir –p /home/svn/repos2 /home/svn/repos3
+
+　　2. 建立svn版本库(与上面目录对应)
+
+　　svnadmin create /home/svn/repos
+
+　　执行此命令后svn自动在repos目录下添加必须的配置文件.
+
+　　注意:版本库不同于一般的文件夹, 直接在操作系统上新建文件无法被SVN识别, 必须使用import等命令将文件导入版本库.
+
+　　此为svn内部指令，create用于新建版本库。请使用svn help查看详细说明。
+
+　　3. 修改版本库配置文件
+
+　　vi /home/svn/repos/conf/svnserve.conf
+
+　　各参数功能在配置文件的注释中有说明, 此处配置如下:
+
+　　[general]
+
+　　anon-access = none # 使非授权用户无法访问
+
+　　auth-access = write # 使授权用户有写权限
+
+　　password-db = passwd # 指明密码文件路径
+
+　　authz-db = authz # 访问控制文件
+
+　　realm = /home/svn/repos # 认证命名空间，subversion会在认证提示里显示，并且作为凭证缓存的关键字。
+
+　　其它采用默认配置. 各语句都必须顶格写, 左侧不能留空格, 否则会出错.
+
+　　4. 配置用户
+
+　　vi /home/svn/repos/conf/passwd
+
+　　输入以下内容：
+
+　　[users]
+
+　　username1 = password1
+
+　　username2 = password2
+
+　　可以添加多个，此为用户名密码对。
+
+　　5. 配置权限
+
+　　vi /home/svn/repos/conf/authz
+
+　　此配置文件设置各用户的授权。
+
+　　包括只读r，读写rw。没有列出的用户，则不允许访问。还可以对用户分组，具体请参考svn手册，以下是简单例子：
+
+　　#对仓库repos根目录权限设置
+
+　　[repos:/]
+
+　　user1 = rw
+
+　　user2 = r
+
+　　6. 使用import导入文件
+
+　　新建好的版本库是空的，需要导入工作目录。
+
+　　//这条语句将把路径/home/user/code下找到的文件导入到你创建的 Subversion 仓库中去
+
+　　svn import /home/code/ file:///home/svn/repos/ -m “注释”
+
+　　三.启动服务
+
+　　svnserve -d -r /home/svn/
+
+　　svn checkout svn://ip/repos
+
+　　输入用户名密码即可
+
+
+// 启动
+svnserve -d -r "/home/qqhe/server" --listen-port 8001
+svnserve -d -r "/home/qqhe/server" --listen-port 7658
+//停止
+killall svnserve 

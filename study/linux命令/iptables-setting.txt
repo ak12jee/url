@@ -1,0 +1,34 @@
+①关闭firewall 
+#停止firewall 
+systemctl stop firewall.service
+
+#禁止firewall开机启动 
+systemctl disable firewall.service
+
+②安装iptables防火墙 
+#安装iptables 
+yum install iptables-services
+
+#编辑防火墙文件 
+vim /etc/sysconfig/iptables 
+添加80和3306端口 
+-A INPUT -m state –state NEW -m tcp -p tcp –dport 80 -j ACCEPT 
+-A INPUT -m state –state NEW -m tcp -p tcp –dport 3306 -j ACCEPT
+
+#重启防火墙使配置文件生效 
+systemctl restart iptables.service
+
+#设置iptables防火墙为开机启动项 
+systemctl enable iptables.service
+
+③关闭SELINUX 
+　vim /etc/selinux/config 
+　#注释以下配置 
+　SELINUX=enforcing 
+　SELINUXTYPE=targeted 
+　 
+　#增加以下配置 
+　SELINUX=disabled 
+　 
+　#使配置立即生效 
+　setenforce 0

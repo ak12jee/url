@@ -1,0 +1,38 @@
+
+1.下载tomcat，进入conf目录
+	创建mkdir -p Catalina/localhost
+	进入localhost目录下创建任一文件名的xml文件,比如text.xml
+		
+		<?xml version="1.0" encoding="UTF-8"?>
+			<Context  path="/text" docBase="/tmp" crossContext="true">
+		</Context>
+		注:docBase为下载的根目录	
+
+2.修改tomcat配置文件，文件目录\conf\web.xml，要将红色的false改为true 
+		<servlet>
+        <servlet-name>default</servlet-name>
+        <servlet-class>org.apache.catalina.servlets.DefaultServlet</servlet-class>
+        <init-param>
+            <param-name>debug</param-name>
+            <param-value>0</param-value>
+        </init-param>
+        <init-param>
+            <param-name>listings</param-name>
+            <param-value>true</param-value> -------这里是要修改滴
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+3.启动
+	
+	
+4.访问网址： 
+	http://192.168.1.12:8080/text 
+	注意事项：此处的根目录text一定要和你在localhost里面建的xml文件名一致，否则无法访问
+
+5.遇到的问题：
+	
+	下载 jdk1.8.0_151包
+	编辑文件 /usr/local/tomcat/bin/catalina.sh (根据你自己的jdk路径进行修改) 在文件的正文开头，即正式代码前，大概在99行添加如下代码
+	export JAVA_HOME=/home/tomcat/jdk1.8.0_151
+	export JRE_HOME=/home/tomcat/jdk1.8.0_151/jre

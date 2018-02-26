@@ -1,0 +1,65 @@
+
+
+SublimeCodeIntel代码自动补全配置
+
+SideBarEnhancements
+
+//pylinter
+
+SublimeTmpl
+
+//Anaconda
+
+Terminal
+
+
+https://github.com/ugorji/go
+
+
+boost 编译
+./bootstrap.sh
+./b2
+./b2 install --prefix=/usr/local
+
+
+
+//g++安装
+
+rpm  –q gcc
+
+rpm  -e [包名]
+包名为上一步中显示的包，形如：
+gcc-4.8.5-4.el7.x86_64
+重复数次，将所有低版本清除
+
+从CentOS6开始，CentOS自身提供了一种方式可以使用Scientific Linux distribution发行版的devtoolset-*来解决。具体使用方式如下：
+1）安装scl发布源：yum install centos-release-scl-rh
+2）安装GCC&GCC-C++：yum install devtoolset-3-gcc devtoolset-3-gcc-c++
+这里面devtoolset-3是第3个版本，目前针对CentOS6&7支持3，4，6三个版本，分别对应GCC4.9，GCC5.3，GCC6.2，用户可以根据自己的需要选择安装哪一个版本，当然可以同时安装多个版本。
+
+3）根据需要使用：source /opt/rh/devtoolset-3/enable 进行切换，这里面devtoolset-3可以根据你是安装3，4，6进行切换。这个切换原理也很简单，只是设置了一些环境变量。若要在启动的时候就生效，可以放置到~/.bashrc之中即可。
+
+4）补充一下使用devtoolset-2（gcc 4.8.2)的方法：
+（1）rpm --import http://linuxsoft.cern.ch/cern/slc6X/x86_64/RPM-GPG-KEY-cern
+（2）wget -O /etc/yum.repos.d/slc6-devtoolset.repo http://linuxsoft.cern.ch/cern/devtoolset/slc6-devtoolset.repo
+（3）yum install devtoolset-2-toolchain
+       yum install devtoolset-2-gcc  devtoolset-2-gcc-c++
+（4）source /opt/rh/devtoolset-2/enable
+
+
+yum install centos-release-scl -y
+yum install devtoolset-4-toolchain -y
+scl enable devtoolset-4 bash
+gcc --version
+
+yum install centos-release-scl-rh
+yum -y install devtoolset-4-gcc devtoolset-4-gcc-c++
+scl enable devtoolset-4 bash
+echo "source /opt/rh/devtoolset-4/enable" >> ~/.bashrc
+
+
+
+g++ t.cpp -I/usr/include/mysql -L/usr/lib64/mysql -lmysqlclient
+
+
+

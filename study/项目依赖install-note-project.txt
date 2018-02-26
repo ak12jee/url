@@ -1,0 +1,79 @@
+
+1.mysql 5.7.17
+	package: http://mirror.centos.org/centos/7/os/x86_64/Packages/
+	原文   ：https://my.oschina.net/Laily/blog/713022
+	
+	a、卸载系统自带的 mariadb-lib
+		rpm -qa|grep mariadb
+		rpm -e mariadb-libs-5.5.56-2.el7.x86_64 --nodeps 
+
+	
+	b.下载 rpm 安装包
+		wget http://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.17-1.el7.x86_64.rpm-bundle.tar
+	
+	c.安装
+		rpm -ivh mysql-community-common-5.7.17-1.el7.x86_64.rpm
+		rpm -ivh mysql-community-libs-5.7.17-1.el7.x86_64.rpm
+		rpm -ivh mysql-community-client-5.7.17-1.el7.x86_64.rpm
+		rpm -ivh mysql-community-server-5.7.17-1.el7.x86_64.rpm
+		rpm -ivh mysql-community-devel-5.7.17-1.el7.x86_64.rpm(开发用)
+		(如果出现安装依赖错误，百度)
+		
+	d.数据库初始化
+		mysqld --initialize --user=mysql 
+			1).--initialize 初始化的，会生成一个 root 账户密码，密码在log文件里(cat /var/log/mysqld.log)
+			2).	mysql 身份运行，则可以去掉 --user 选项
+	
+	e.启动数据库，然后使用上面的密码登陆
+		systemctl start mysqld
+		mysql -uroot -p
+	f.修改 root 密码	
+		ALTER USER 'root'@'localhost' IDENTIFIED BY 'liujmysqldie@ZY#123';
+		
+2.curl 7.49
+	./configure --prefix=/opt/app/curl749
+	make
+	make install
+
+3.boost 1.60
+	./bootstrap.sh --prefix=/opt/app/boost160
+	./b2 install
+	
+4.openssl 1.1.0.g
+	./config --prefix=/opt/app/openssl --openssldir=/opt/app/openssl
+	make &&  make install
+	openssl version -a
+	
+5.msgpack 1.40
+	cmake . -DCMAKE_INSTALL_PREFIX=/opt/app/msgpack140 -DMSGPACK_CXX11=ON
+	make && make install
+	
+
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+http://mirror.centos.org/centos/7/os/x86_64/Packages/

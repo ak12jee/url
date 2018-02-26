@@ -1,0 +1,39 @@
+
+1.安装图形化组件
+	mount /dev/sr0 /mnt 
+	df
+
+	
+ #yum clean all                            \\  清楚yum仓库缓存 
+ #yum makecache                             \\ 创建yum仓库缓存
+ #yum repolist                              \\ 列出可用yum仓库
+ #yum grouplist                              \\ 列出程序组
+ 
+ yum -y groupinstall "Server with GUI"      \\ 安装图形化程序组
+ 
+ 启动桌面——startx
+ 
+ 2.设置默认运行级别为图形化
+	systemctl get-default          \\查看默认运行级别
+	systemctl set-default graphical.target \\设置默认图形化运行级别
+	
+	
+	
+在用U盘装完CentOS后，重新开机启动后显示：
+
+Initial setup of CentOS Linux 7 (core) 
+
+1) [x] Creat user 2) [!] License information
+
+(no user will be created) (license not accepted)
+
+Please make your choice from above ['q' to quit | 'c' to continue | 'r' to refresh]:
+解决方法：
+
+输入“1”，按Enter键
+
+输入“2”，按Enter键
+
+输入“q"，按Enter键
+
+输入“yes”，按Enter键

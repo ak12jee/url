@@ -1,0 +1,13 @@
+
+
+问题：Missing separate debuginfos, use: debuginfo-install glibc-2.17-196.el7.x86_64 libgcc-4.8.5-16.el7.x86_64 libstdc++-4.8.5-16.el7.x86_64
+
+
+1、  修改文件/etc/yum.repos.d/CentOS-Debuginfo.repo中的enabled参数，将其值修改为1，如：vi /etc/yum.repos.d/CentOS-Debuginfo.repo （没有这个文件就创建）
+
+
+如出现：  
+ debuginfo-install: command not found  
+则先安装yum-utils：  
+ yum install yum-utils 
+ 

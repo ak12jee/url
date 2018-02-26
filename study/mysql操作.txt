@@ -1,0 +1,11 @@
+
+
+1.mysql 操作
+	
+	a.创建用户，并授权
+	CREATE USER 'username'@'host' IDENTIFIED BY 'password'; 
+	GRANT SELECT, INSERT ON test.user TO 'pig'@'%'; 
+	GRANT ALL ON *.* TO 'pig'@'%'; 
+	
+	GRANT ALL PRIVILEGES ON *.* TO 'qqhe'@'%' IDENTIFIED BY 'Test_liujie@123' WITH GRANT OPTION;
+	FLUSH PRIVILEGES; 
